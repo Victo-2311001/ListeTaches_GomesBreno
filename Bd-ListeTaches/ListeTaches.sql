@@ -30,19 +30,4 @@ CREATE TABLE sous_taches (
     FOREIGN KEY (tache_id) REFERENCES taches(id) ON DELETE CASCADE
 );
 
-INSERT INTO utilisateur (nom, prenom, courriel, cle_api, password)
-VALUES ('brenotest', 'brebreno', 'brenotest@example.com', 'cle1234567890breno', 'brenobreno');
-
-INSERT INTO taches (utilisateur_id, titre, description, date_debut, date_echeance)
-VALUES (1, 'Épicérie', 'Acheter des choses essentielles', '2025-04-15', '2025-04-18');
-
-INSERT INTO taches (utilisateur_id, titre, description, date_debut, date_echeance, complete)
-VALUES (1, 'test', 'Acheter des choses essentielles', '2025-04-15', '2025-04-18', true);
-
-
-INSERT INTO sous_taches (tache_id, titre)
-VALUES (1, 'Acheter du lait'), (1, 'Acheter du pain');
-
-
-SELECT id, nom, prenom, courriel, cle_api FROM utilisateur;
 
