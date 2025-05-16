@@ -1,0 +1,1525 @@
+{
+    "openapi": "3.1.0",
+    "info":{
+        "title": "Liste de tâches API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000/",
+            "description": "Serveur de développement"
+        },
+        {
+            "url": "http://api.profs.ca",
+            "description": "Serveur en ligne"
+        }
+    ],
+    "paths": {
+        "/api": {
+            "get": {
+                "summary": "Message de bienvenue",
+                "tags": ["Accueil"],
+                "responses": {
+                    "200": {
+                        "description": "Retourne un message de bienvenue",
+                        "content": {
+                            "text/html": {
+                                "exemple": "<h1>Serveur API - Liste de tâches!</h1>"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/liste/utilisateur": {
+            "post": {
+                "summary": "Créer un utilisateur",
+                "tags": ["Utilisateur"],
+                "description": "Créer un utilisateur pour avoir une clé api et utiliser le API",
+                "parameters": [
+                   {
+                        "in": "query",
+                        "name": "nom",
+                        "description": "Nom de l'utilisateur à créer.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "exemple": "Breno"
+                        }
+                    },  
+                    {
+                        "in": "query",
+                        "name": "prenom",
+                        "description": "Prénom de l'utilisateur à créer.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "exemple": "Gomes"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "courriel",
+                        "description": "Courriel de l'utilisateur à créer.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "email",
+                            "exemple": "breno@exemple.com"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "password",
+                        "description": "Mot de passe de l'utilisateur (qui va être haché).",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "exemple": "banane123"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "L'utilisateur {nom de l'utilisateur} a été crée avec succès avec la clé api: {cle_api de l'utilisateur}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "message_exemple":" L'utilisateur {nom} a été crée avec succès avec la clé api: {cleapi de l'utilisateur}"
+                                        },
+                                         "utilisateur": {
+                                            "type": "object",
+                                            "properties": {
+                                                "nom": {
+                                                    "type": "string",
+                                                    "exemple": "Breno"
+                                                },
+                                                "prenom": {
+                                                    "type": "string",
+                                                    "exemple": "Gomes"
+                                                },
+                                                "courriel": {
+                                                    "type": "string",
+                                                    "exemple": "breno@exemple.com"
+                                                },
+                                                "cle_api": {
+                                                    "type": "string",
+                                                    "exemple": "banane123abc456exemple"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Le format des données est invalide",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Le format des données est invalide"
+                                        },
+                                        "champs_manquants": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "exemple": ["nom", "prenom"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Échec pour la création de l'utilisateur",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Échec pour la création de l'utilisateur {nom}"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/liste/utilisateur/cleapi": {
+            "post": {
+                "summary": "Récupérer la clé API d'un utilisateur",
+                "tags": ["Utilisateur"],
+                "description": "Permet à un utilisateur de récupérer sa clé API en créant un compte avec un email et un mot de passe.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "courriel": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "exemple": "breno@exemple.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "exemple": "banane123"
+                                    }
+                                },
+                                "required": ["courriel", "password"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Clé API récupérée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "utilisateur": {
+                                            "type": "object",
+                                            "properties": {
+                                                "nom": { "type": "string", "exemple": "Breno" },
+                                                "prenom": { "type": "string", "exemple": "Gomes" },
+                                                "cle_api": { "type": "string", "exemple": "12345-exemple-67890" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Le format des données est invalide",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Le format des données est invalide"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Échec pour la récupération de la clé API"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/liste/utilisateur/nouvellecle": {
+            "post": {
+                "summary": "Régénérer la clé API d'un utilisateur",
+                "tags": ["Utilisateur"],
+                "description": "Permet de régénérer la clé API d'un utilisateur existant.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "courriel": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "exemple": "breno@exemple.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "exemple": "password123"
+                                    }
+                                },
+                                "required": ["courriel", "password"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Nouvelle clé API générée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "exemple": "Clé API régénérée avec succès"
+                                        },
+                                        "utilisateur": {
+                                            "type": "object",
+                                            "properties": {
+                                                "nom": { "type": "string", "exemple": "Breno" },
+                                                "prenom": { "type": "string", "exemple": "Gomes" },
+                                                "Nouvelle_cle_api": { "type": "string", "exemple": "nouvelle-cle-12345" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Le format des données est invalide",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Le format des données est invalide"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur pour la régénération de la clé API",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Échec pour la régénération de la clé API"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/liste/taches": {
+            "get": {
+                "summary": "Lister les tâches d'un utilisateur",
+                "tags": ["Tâches"],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "cle_api",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "exemple": "12345-exemple-67890"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "toutes",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "exemple": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des tâches",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "taches": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "titre": { "type": "string", "exemple": "Acheter du pain" },
+                                                    "description": { "type": "string", "exemple": "Acheter du pain à l'épicerie" },
+                                                    "date_debut": { "type": "string", "exemple": "2025-05-10" },
+                                                    "date_echeance": { "type": "string", "exemple": "2025-05-15" }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Clé API manquante dans le header",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Clé API obligatoire dans le header de la requête."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Aucune tâche trouvée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "exemple": "L'utilisateur n'a pas de tâches en cours."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Erreur pour la récupération de la liste de tâches."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/liste/taches/:id": {
+            "get": {
+                "summary": "Afficher le détail d'une tâche",
+                "tags": ["Tâches"],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "cle_api",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "exemple": "12345-abcde-67890"
+                        },
+                        "description": "Clé API obligatoire pour afficher les détails de la tâche."
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "exemple": 1
+                        },
+                        "description": "ID de la tâche à afficher."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détail de la tâche affiché avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "details_tache": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "tache_titre": {
+                                                        "type": "string",
+                                                        "exemple": "Aller à l'épicerie"
+                                                    },
+                                                    "tache_description": {
+                                                        "type": "string",
+                                                        "exemple": "Acheter du pain et légumes"
+                                                    },
+                                                    "tache_complete": {
+                                                        "type": "boolean",
+                                                        "exemple": false
+                                                    },
+                                                    "date_debut": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "exemple": "2025-05-10"
+                                                    },
+                                                    "date_echeance": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "exemple": "2025-05-15"
+                                                    },
+                                                    "sous_taches": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "sous_tache_id": {
+                                                                    "type": "integer",
+                                                                    "exemple": 1
+                                                                },
+                                                                "sous_tache_titre": {
+                                                                    "type": "string",
+                                                                    "exemple": "Acheter des pommes"
+                                                                },
+                                                                "sous_tache_complete": {
+                                                                    "type": "boolean",
+                                                                    "exemple": false
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erreur de validation (clé API ou ID de tâche manquant)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Clé API obligatoire dans le header de la requête."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tâche introuvable",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "exemple": "Il n'a pas de tâche avec cet id."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur lors de l'affichage des détails de la tâche",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Erreur pour la récupération du détail de la tâche."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/liste/taches/ajouter": {
+            "post": {
+                "summary": "Ajouter une tâche",
+                "tags": ["Tâches"],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "cle_api",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "exemple": "12345-exemple-67890"
+                        },
+                        "description": "Clé API obligatoire pour créer une tâche."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "titre": { "type": "string", "exemple": "Aller au mécano" },
+                                    "description": { "type": "string", "exemple": "Changer pneus d'hiver" },
+                                    "date_debut": { "type": "string", "exemple": "2025-05-10" },
+                                    "date_echeance": { "type": "string", "exemple": "2025-05-15" }
+                                },
+                                "required": ["titre"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tâche ajoutée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "exemple": "Tâche crée avec succès"
+                                        },
+                                        "tache": {
+                                            "type": "object",
+                                            "properties": {
+                                                "titre": { "type": "string", "exemple": "Aller au mécano" },
+                                                "description": { "type": "string", "exemple": "Changer pneus d'hiver" },
+                                                "date_debut": { "type": "string", "exemple": "2025-05-10" },
+                                                "date_echeance": { "type": "string", "exemple": "2025-05-15" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erreur de validation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Clé API et titre sont obligatoires."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                     "500": {
+                        "description": "Erreur serveur lors de la création de la tâche",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Erreur pour l'ajout de la tâche."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/liste/taches/:id:/soustache/ajouter": {
+            "post": {
+                "summary": "Ajouter une sous-tâche",
+                "tags": ["Sous-Tâches"],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "cle_api",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "exemple": "12345-exemple-67890"
+                        },
+                        "description": "Clé API obligatoire pour ajouter une sous-tâche."
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "exemple": 1
+                        },
+                        "description": "ID de la tâche où la sous-tâche sera ajoutée."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "titre": {
+                                        "type": "string",
+                                        "exemple": "Acheter du pain"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Sous-tâche ajoutée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "exemple": "Sous-tâche créée avec succès"
+                                        },
+                                        "tache": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": { "type": "integer", "exemple": 1 },
+                                                "titre": { "type": "string", "exemple": "Acheter du pain" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erreur de validation (clé API, id de tâche ou titre manquant)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Clé API, id de la tâche et titre de la sous-tâche sont obligatoires."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tâche introuvable",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Tâche introuvable."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur lors de l'ajout de la sous-tâche",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Erreur pour l'ajout de la sous-tâche."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/liste/taches/delete/:id": {
+            "delete": {
+                "summary": "Supprimer une tâche",
+                "tags": ["Tâches"],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "cle_api",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "exemple": "12345-exemple-67890"
+                        },
+                        "description": "Clé API obligatoire pour supprimer une tâche."
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "exemple": 1
+                        },
+                        "description": "ID de la tâche à supprimer."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tâche supprimée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "exemple": "Tâche supprimée avec succès"
+                                        },
+                                        "tache": {
+                                            "type": "object",
+                                            "properties": {
+                                                "titre": { "type": "string", "exemple": "Acheter du lait" },
+                                                "description": { "type": "string", "exemple": "Acheter des choses" },
+                                                "complete": { "type": "boolean", "exemple": false }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400-cleapi": {
+                        "description": "Erreur de validation (clé API manquante ou ID de tâche manquant)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Clé API obligatoire dans le header."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400-id": {
+                        "description": "Erreur de validation (clé API manquante ou ID de tâche manquant)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Clé API obligatoire dans le header."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tâche introuvable",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Tâche introuvable."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur lors de la suppression de la tâche",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Erreur pour la suppression de la tâche."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },  
+        "/api/liste/taches/:idtache/soustache/delete/:idsoustache": {
+            "delete": {
+                "summary": "Supprimer une sous-tâche",
+                "tags": ["Sous-Tâches"],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "cle_api",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "exemple": "12345-exemple-67890"
+                        },
+                        "description": "Clé API obligatoire pour supprimer une sous-tâche."
+                    },
+                    {
+                        "in": "path",
+                        "name": "idtache",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "exemple": 1
+                        },
+                        "description": "ID de la tâche parente de la sous-tâche à supprimer."
+                    },
+                    {
+                        "in": "path",
+                        "name": "idsoustache",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "exemple": 2
+                        },
+                        "description": "ID de la sous-tâche à supprimer."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sous-tâche supprimée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "exemple": "Sous-tâche supprimée avec succès"
+                                        },
+                                        "soustache": {
+                                            "type": "object",
+                                            "properties": {
+                                                "titre": {
+                                                    "type": "string",
+                                                    "exemple": "Acheter du pain"
+                                                },
+                                                "complete": {
+                                                    "type": "boolean",
+                                                    "exemple": false
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erreur de validation (clé API, id de tâche ou id de sous-tâche manquant)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Clé API, id de la tâche et id de la sous-tâche sont obligatoires."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Sous-tâche introuvable",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Sous-tâche introuvable."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur lors de la suppression de la sous-tâche",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Erreur pour la suppression de la sous-tâche."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/api/liste/taches/:id/statut": {
+            "put": {
+                "summary": "Modifier le statut d'une tâche",
+                "tags": ["Tâches"],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "cle_api",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "exemple": "12345-exemple-67890"
+                        },
+                        "description": "Clé API obligatoire pour modifier le statut d'une tâche."
+                    },
+                    {
+                        "in": "path",   
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "exemple": 1
+                        },
+                        "description": "ID de la tâche à modifier."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nouveauStatut": {
+                                        "type": "boolean",
+                                        "exemple": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Statut de la tâche modifié avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "exemple": "Statut de la tâche modifié avec succès"
+                                        },
+                                        "tache": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": { "type": "integer", "exemple": 1 },
+                                                "nouveauStatut": { "type": "boolean", "exemple": true }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erreur de validation (clé API ou statut manquant)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Le statut doit être true ou false."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tâche introuvable",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Tâche introuvable."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur lors de la modification du statut de la tâche",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Erreur pour modifier le statut de la tâche."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/liste/taches/:idtache/soustache/statut/:idsoustache": {
+            "put": {
+                "summary": "Modifier le statut d'une sous-tâche",
+                "tags": ["Sous-Tâches"],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "cle_api",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "exemple": "12345-exemple-67890"
+                        },
+                        "description": "Clé API obligatoire pour modifier le statut d'une sous-tâche."
+                    },
+                    {
+                        "in": "path",
+                        "name": "idtache",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "exemple": 1
+                        },
+                        "description": "ID de la tâche parente de la sous-tâche."
+                    },
+                    {
+                        "in": "path",
+                        "name": "idsoustache",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "exemple": 1
+                        },
+                        "description": "ID de la sous-tâche à modifier."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nouveauStatut": {
+                                        "type": "boolean",
+                                        "exemple": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Statut de la sous-tâche modifié avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "exemple": "Statut de la sous-tâche modifié avec succès"
+                                        },
+                                        "soustache": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": { "type": "integer", "exemple": 1 },
+                                                "nouveauStatut": { "type": "boolean", "exemple": true }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erreur de validation (clé API ou statut manquant)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Le statut doit être true ou false."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Sous-tâche introuvable",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Sous-tâche introuvable."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur lors de la modification du statut de la sous-tâche",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Erreur pour modifier le statut de la sous-tâche."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/liste/taches/:id/modifier": {
+            "put": {
+                "summary": "Modifier une tâche",
+                "tags": ["Tâches"],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "cle_api",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "exemple": "12345-abcde-67890"
+                        },
+                        "description": "Clé API obligatoire pour modifier une tâche."
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "exemple": 1
+                        },
+                        "description": "ID de la tâche à modifier."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "titre": {
+                                        "type": "string",
+                                        "exemple": "Nouvelle tâche"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "exemple": "Description mise à jour de la tâche"
+                                    },
+                                    "date_debut": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "exemple": "2025-05-15"
+                                    },
+                                    "date_echeance": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "exemple": "2025-05-20"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tâche modifiée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "exemple": "Tâche modifiée avec succès"
+                                        },
+                                        "tache": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": { "type": "integer", "exemple": 1 },
+                                                "titre": { "type": "string", "exemple": "Nouvelle tâche" },
+                                                "description": { "type": "string", "exemple": "Description mise à jour" },
+                                                "date_debut": { "type": "string", "exemple": "2025-05-15" },
+                                                "date_echeance": { "type": "string", "exemple": "2025-05-20" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erreur de validation (clé API ou informations manquantes)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Aucun champ à modifier."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tâche introuvable",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Tâche introuvable."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur lors de la modification de la tâche",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Erreur pour modifier la tâche."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/liste/taches/:idtache/soustache/modifier/:idsoustache": {
+            "put": {
+                "summary": "Modifier une sous-tâche",
+                "tags": ["Sous-Tâches"],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "cle_api",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "exemple": "12345-abcde-67890"
+                        },
+                        "description": "Clé API obligatoire pour modifier une sous-tâche."
+                    },
+                    {
+                        "in": "path",
+                        "name": "idtache",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "exemple": 1
+                        },
+                        "description": "ID de la tâche parente de la sous-tâche."
+                    },
+                    {
+                        "in": "path",
+                        "name": "idsoustache",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "exemple": 1
+                        },
+                        "description": "ID de la sous-tâche à modifier."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "titre": {
+                                        "type": "string",
+                                        "exemple": "Nouvelle sous-tâche"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sous-tâche modifiée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "exemple": "Sous-tâche modifiée avec succès"
+                                        },
+                                        "soustache": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": { "type": "integer", "exemple": 1 },
+                                                "titre": { "type": "string", "exemple": "Nouvelle sous-tâche" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erreur de validation (clé API ou titre manquant)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Aucun champ à modifier."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Sous-tâche introuvable",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Sous-tâche introuvable."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur lors de la modification de la sous-tâche",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "erreur": {
+                                            "type": "string",
+                                            "exemple": "Erreur pour modifier la sous-tâche."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
