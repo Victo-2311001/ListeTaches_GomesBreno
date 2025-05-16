@@ -2,7 +2,7 @@ import db from '../config/dp_pg.js';
 //https://refine.dev/blog/node-js-uuid/#2-uuid-npm-package => Source pour le uuid (Création de la cle_api)
 import { v4 as uuidv4 } from 'uuid';
 //https://www.freecodecamp.org/news/how-to-hash-passwords-with-bcrypt-in-nodejs/
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 //UTILISATEURS:
 const ajoutUtilisateur = async (nom, prenom, courriel, password) => {
